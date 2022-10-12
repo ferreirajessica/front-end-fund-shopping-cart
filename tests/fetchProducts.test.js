@@ -18,7 +18,19 @@ describe('1 - Teste a função fetchProducts', () => {
     expect(fetchProducts('computador')).resolves.toEqual(`${computadorSearch}`);
   });
   it('returns error when there are no arguments', async () => {
-    expect(fetchProducts()).toThrow('You must provide an url');
+    expect(() => fetchProducts()).rejects.toThrow(new Error('You must provide an url'));
   })
+  it('creates a module.exports if there is none', () => {
+    if (typeof module !== 'undefined') {
+      module.exports = {
+        fetchProducts,
+      };
+    }
+  });
+  it('does nothing if module exports is alreafy created', () => {
+    if (typeof module === 'function') {
+      return;
+    }
+  });
 });
 
