@@ -15,10 +15,10 @@ describe('1 - Teste a função fetchProducts', () => {
      expect(fetch).toHaveBeenCalledWith('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   });
   it(`tests fetchProducts return to be ${computadorSearch}`, async () => {
-    expect(fetchProducts('computador')).resolves.toEqual(`${computadorSearch}`);
+    await expect(fetchProducts('computador')).resolves.toEqual(`${computadorSearch}`);
   });
   it('returns error when there are no arguments', async () => {
-    expect(() => fetchProducts()).rejects.toThrow(new Error('You must provide an url'));
+    await expect(() => fetchProducts()).rejects.toThrow(new Error('You must provide an url'));
   })
   it('creates a module.exports if there is none', () => {
     if (typeof module !== 'undefined') {
