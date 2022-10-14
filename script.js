@@ -1,8 +1,3 @@
-// Esse tipo de comentário que estão antes de todas as funções são chamados de JSdoc,
-// experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições! 
-
-// Fique a vontade para modificar o código já escrito e criar suas próprias funções!
-
 /**
  * Função responsável por criar e retornar o elemento de imagem do produto.
  * @param {string} imageSource - URL da imagem.
@@ -29,6 +24,14 @@ const createCustomElement = (element, className, innerText) => {
   return e;
 };
 
+const createCustomElementWithId = (element, className, innerText, id) => {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  e.id = id;
+  return e;
+};
+
 /**
  * Função responsável por criar e retornar o elemento do produto.
  * @param {Object} product - Objeto do produto. 
@@ -37,42 +40,32 @@ const createCustomElement = (element, className, innerText) => {
  * @param {string} product.thumbnail - URL da imagem do produto.
  * @returns {Element} Elemento de produto.
  */
-const createProductItemElement = (id, title, thumbnail) => {
+const createProductItemElement = ({ id, title, thumbnail }) => {
   const section = document.createElement('section');
   section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item_id', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  section.appendChild(createCustomElementWithId(
+    'button', 'item__add', 'Adicionar ao carrinho!', id,
+    ));
   return section;
 };
 
 async function createProductsObject() {
   const results = await fetchProducts('computador');
   const resultsObject = results.map((product) => { 
-    const obj = { id: product.id, title: product.title, thumbnail: product.thumbnail };
-    return obj;
+    const { id, title, thumbnail } = product;
+    return { id, title, thumbnail };
   });
  return resultsObject;
-  // console.log(results[0].id, results[0].title, results[0].price, results[0].thumbnail);
 }
 
-async function displayProducts() {
-  const mainSection = document.getElementsByClassName('items')[0];
-  const products = await createProductsObject();
-  products.forEach((product) => mainSection.appendChild(createProductItemElement(
-    product.id, product.title, product.thumbnail,
-    )));
-}
-
-displayProducts();
-
-// /**
-//  * Função que recupera o ID do produto passado como parâmetro.
-//  * @param {Element} product - Elemento do produto.
-//  * @returns {string} ID do produto.
+/**
+ * Função que recupera o ID do produto passado como parâmetro.
+ * @param {Element} product - Elemento do produto.
+ * @returns {string} ID do produto.
 //  */
 // const getIdFromProductItem = (product) => product.querySelector('span.id').innerText;
 
@@ -84,14 +77,32 @@ displayProducts();
 //  * @param {string} product.price - Preço do produto.
 //  * @returns {Element} Elemento de um item do carrinho.
 //  */
-// const createCartItemElement = ({ id, title, price }) => {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// };
+const createCartItemElement = async (event) => {
+  const cart = document.getElementsByClassName('cart__items')[0];
+  const result = await fetchItem(event.target.id);
+  const { id, title, price } = result;
+  const li = document.createElement('li');
+  cart.appendChild(li);
+  li.className = 'cart__item';
+  li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
+  // li.addEventListener('click', cartItemClickListener);  
+};
+
+async function displayProducts() {
+  const mainSection = document.getElementsByClassName('items')[0];
+  const products = await createProductsObject();
+  console.log(products);
+  products.forEach(({ id, title, thumbnail }) => {
+    mainSection.appendChild(createProductItemElement({ id, title, thumbnail }));
+    const button = document.getElementById(id);
+    button.addEventListener('click', createCartItemElement);
+    });
+}
+
+displayProducts();
 
 fetchProducts('computador');
 
-window.onload = () => { };
+window.onload = () => { 
+  
+};

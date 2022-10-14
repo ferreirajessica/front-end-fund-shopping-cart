@@ -15,7 +15,7 @@ describe('1 - Teste a função fetchProducts', () => {
      expect(fetch).toHaveBeenCalledWith('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   });
   it(`tests fetchProducts return to be ${computadorSearch}`, async () => {
-    await expect(fetchProducts('computador')).resolves.toEqual(`${computadorSearch}`);
+    await expect(fetchProducts('computador')).resolves.toEqual(computadorSearch); // mudei pra fora das string literals
   });
   it('returns error when there are no arguments', async () => {
     await expect(() => fetchProducts()).rejects.toThrow(new Error('You must provide an url'));
