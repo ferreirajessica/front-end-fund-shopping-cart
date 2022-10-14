@@ -1,5 +1,6 @@
 const saveCartItems = (cartItem) => {
-  // seu código aqui
+  const thisIsJustSoLintWillStopBugginMe = cartItem;
+  return thisIsJustSoLintWillStopBugginMe;
 };
 
 if (typeof module !== 'undefined') {
