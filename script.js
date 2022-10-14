@@ -62,6 +62,11 @@ async function createProductsObject() {
  return resultsObject;
 }
 
+function cartItemClickListener(event) {
+  const li = event.target;
+  li.parentNode.removeChild(li);
+}
+
 /**
  * Função que recupera o ID do produto passado como parâmetro.
  * @param {Element} product - Elemento do produto.
@@ -85,13 +90,12 @@ const createCartItemElement = async (event) => {
   cart.appendChild(li);
   li.className = 'cart__item';
   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-  // li.addEventListener('click', cartItemClickListener);  
+  li.addEventListener('click', cartItemClickListener);  
 };
 
 async function displayProducts() {
   const mainSection = document.getElementsByClassName('items')[0];
   const products = await createProductsObject();
-  console.log(products);
   products.forEach(({ id, title, thumbnail }) => {
     mainSection.appendChild(createProductItemElement({ id, title, thumbnail }));
     const button = document.getElementById(id);
