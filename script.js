@@ -3,6 +3,8 @@
  * @param {string} imageSource - URL da imagem.
  * @returns {Element} Elemento de imagem do produto.
  */
+const cartStorage = [];
+
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -62,10 +64,10 @@ async function createProductsObject() {
  return resultsObject;
 }
 
-function cartItemClickListener(event) {
-  const li = event.target;
-  li.parentNode.removeChild(li);
-}
+// function cartItemClickListener(event) {
+//   const li = event.target;
+//   li.parentNode.removeChild(li);
+// }
 // MEXA C ESSA ABAIXO PRA SAVECARTITEMS
 /**
  * Função que recupera o ID do produto passado como parâmetro.
@@ -82,33 +84,35 @@ function cartItemClickListener(event) {
 //  * @param {string} product.price - Preço do produto.
 //  * @returns {Element} Elemento de um item do carrinho.
 //  */
-function checkLocalStorage(storage) {
-  if (getSavedCartItems('cartItems') === null) {
-    saveCartItems(storage);
-  }
-  const retrievedItems = JSON.parse(localStorage.getItem('cartItems'));
-  const upgradeStorage = retrievedItems.push(storage);
-  console.log(upgradeStorage);
-}
 
-// function printLocalStorage() {
-//   const print = JSON.parse(localStorage.getItem('cartItems'));
-//   console.log(print);
-// }
-
-// printLocalStorage();
-
-const createCartItemElement = async (event) => {
-  const cart = document.getElementsByClassName('cart__items')[0];
-  const result = await fetchItem(event.target.id);
-  const { id, title, price } = result;   
+const createCart = (cart, id, title, price) => {
   const li = document.createElement('li');
   cart.appendChild(li);
   li.className = 'cart__item';
   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-  li.addEventListener('click', cartItemClickListener);  
-  const storage = [li.innerText];
-  checkLocalStorage(storage);
+  return li;
+};
+
+function cartItemClickListener(event) {
+  const cartStorageReload = [];
+  const cart = document.getElementsByClassName('cart__items')[0];
+  const li = event.target;
+  li.parentNode.removeChild(li);
+  const updatedCart = cart.children;
+  for (child of updatedCart) {
+    cartStorageReload.push(child.innerText);    
+  }
+  console.log(cartStorageReload);
+  saveCartItems(cartStorageReload);
+}
+
+const createCartItemElement = async (event) => {
+  const cart = document.getElementsByClassName('cart__items')[0];
+  const { id, title, price } = await fetchItem(event.target.id);
+  cartStorage.push(`ID: ${id} | TITLE: ${title} | PRICE: $${price}`);
+  const li = createCart(cart, id, title, price); 
+  li.addEventListener('click', cartItemClickListener);
+  saveCartItems(cartStorage);    
 };
 
 async function displayProducts() {
@@ -121,10 +125,26 @@ async function displayProducts() {
     });
 }
 
+function appendToCart(cart, item) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = item;
+  cart.appendChild(li);
+  li.addEventListener('click', cartItemClickListener);
+}
+
+function reloadCart() {
+  if (localStorage.getItem('cartItems')) {
+    const cart = document.getElementsByClassName('cart__items')[0];
+    const cartItems = getSavedCartItems('carItems');    
+  cartItems.forEach((item) => appendToCart(cart, item));  
+  }
+}
+
 displayProducts();
 
 fetchProducts('computador');
 
 window.onload = () => { 
-  
+  reloadCart();
 };
