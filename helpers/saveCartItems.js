@@ -1,6 +1,5 @@
 const saveCartItems = (cartItem) => {
-  const thisIsJustSoLintWillStopBugginMe = cartItem;
-  return thisIsJustSoLintWillStopBugginMe;
+  localStorage.setItem('cartItems', JSON.stringify([cartItem]));
 };
 
 if (typeof module !== 'undefined') {

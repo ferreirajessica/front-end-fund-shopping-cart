@@ -66,7 +66,7 @@ function cartItemClickListener(event) {
   const li = event.target;
   li.parentNode.removeChild(li);
 }
-
+// MEXA C ESSA ABAIXO PRA SAVECARTITEMS
 /**
  * Função que recupera o ID do produto passado como parâmetro.
  * @param {Element} product - Elemento do produto.
@@ -82,15 +82,33 @@ function cartItemClickListener(event) {
 //  * @param {string} product.price - Preço do produto.
 //  * @returns {Element} Elemento de um item do carrinho.
 //  */
+function checkLocalStorage(storage) {
+  if (getSavedCartItems('cartItems') === null) {
+    saveCartItems(storage);
+  }
+  const retrievedItems = JSON.parse(localStorage.getItem('cartItems'));
+  const upgradeStorage = retrievedItems.push(storage);
+  console.log(upgradeStorage);
+}
+
+// function printLocalStorage() {
+//   const print = JSON.parse(localStorage.getItem('cartItems'));
+//   console.log(print);
+// }
+
+// printLocalStorage();
+
 const createCartItemElement = async (event) => {
   const cart = document.getElementsByClassName('cart__items')[0];
   const result = await fetchItem(event.target.id);
-  const { id, title, price } = result;
+  const { id, title, price } = result;   
   const li = document.createElement('li');
   cart.appendChild(li);
   li.className = 'cart__item';
   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);  
+  const storage = [li.innerText];
+  checkLocalStorage(storage);
 };
 
 async function displayProducts() {
