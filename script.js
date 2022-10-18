@@ -3,6 +3,8 @@
  * @param {string} imageSource - URL da imagem.
  * @returns {Element} Elemento de imagem do produto.
  */
+const clearButton = document.getElementsByClassName('empty-cart')[0];
+
 const cartStorage = [];
 
 const createProductImageElement = (imageSource) => {
@@ -63,18 +65,6 @@ async function createProductsObject() {
   });
  return resultsObject;
 }
-
-// function cartItemClickListener(event) {
-//   const li = event.target;
-//   li.parentNode.removeChild(li);
-// }
-// MEXA C ESSA ABAIXO PRA SAVECARTITEMS
-/**
- * Função que recupera o ID do produto passado como parâmetro.
- * @param {Element} product - Elemento do produto.
- * @returns {string} ID do produto.
-//  */
-// const getIdFromProductItem = (product) => product.querySelector('span.id').innerText;
 
 // /**
 //  * Função responsável por criar e retornar um item do carrinho.
@@ -144,6 +134,20 @@ function reloadCart() {
   cartItems.forEach((item) => appendToCart(cart, item));  
   }
 }
+
+// function totalPrice() {
+
+// }
+
+function emptyCart() {
+  const cart = document.getElementsByClassName('cart__items')[0];
+  cart.innerHTML = '';
+  // if (localStorage.getItem('cartItems')) {
+  localStorage.removeItem('cartItems');
+  // }
+}
+
+clearButton.addEventListener('click', emptyCart);
 
 displayProducts();
 
