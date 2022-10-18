@@ -112,6 +112,10 @@ const createCartItemElement = async (event) => {
   cartStorage.push(`ID: ${id} | TITLE: ${title} | PRICE: $${price}`);
   const li = createCart(cart, id, title, price); 
   li.addEventListener('click', cartItemClickListener);
+  // if (localStorage.getItem('cartItems')) {
+  //   const savedItems = getSavedCartItems('carItems');
+  //   savedItems.forEach((savedItem) => cartStorage.push(savedItem));    
+  // }
   saveCartItems(cartStorage);    
 };
 
